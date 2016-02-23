@@ -41,15 +41,29 @@ for np=1:N_points
         b = [b ; - skew_sym(u{nc}(:,np)) * t{nc}];
     end
     depth_est(np) = A\b;
+    % Initial estimation of the real 3D points
+    P_est_0(1:3,np) = u{1}(:,np) * depth_est(np);
 end
+
+disp(strcat('Dummy error: ',num2str(norm(mean(P{1,1} - P_est_0),2))));
 
 %% BA implementation
-% Initial solution
-for np=1:N_points
-    P0(1:3,np) = u{1}(:,np) * depth_est(np);
+P_init = P_est_0;
+epsilon = 1;
+while epsilon > 10^-4
+    P_keep = P_init; % Keep to compare
+    for np=1:N_points
+        r = [];
+        J = [];
+        for nc=1:N_cameras
+            temp = (R{nc}*P_init(:,np) + t{nc});
+            r = [r; u{nc}(1:2,np) - temp(1:2) ./ temp(3)]; % residual for each camera
+            J = [J; jacobianPerspective(temp)];
+        end
+        P_correction = J\r;
+        P_init(:,np) = P_init(:,np) + P_correction;
+    end
+    epsilon = norm(mean(P_init - P_keep),2);
 end
 
-% Noisy homogeneous coordinate
-
-while 
-
+disp(strcat('BA error   : ',num2str(norm(mean(P{1,1} - P_init),2))));
