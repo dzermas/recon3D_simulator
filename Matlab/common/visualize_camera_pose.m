@@ -1,4 +1,9 @@
-function visualize_camera_pose(camera, R, t)
+function visualize_camera_pose(camera, R, t, color)
+
+% camera : camera intrinsics structure
+% R      : rotation of the camera
+% t      : translation of the camera
+% color  : 3 component vector (red, green, blue) range [0,1]
 
 fc = camera.fc(1);
 w = camera.cc(1)/fc;
@@ -18,4 +23,4 @@ cam_base = [c_center(1) cam_face(1,1) c_center(1) cam_face(1,2) c_center(1) cam_
 
 plot3([cam_base(1,:) cam_face(1,:)], ...
       [cam_base(2,:) cam_face(2,:)], ...
-      [cam_base(3,:) cam_face(3,:)], 'Color', [rand, rand, rand])
+      [cam_base(3,:) cam_face(3,:)], 'Color', color)

@@ -42,8 +42,8 @@ z = [0 1 0; -1 0 0; 0 0 1];
 %s = u * z * u';
 
 % Two possibilities:
-rot1 = u * w  * v';
-rot2 = u * w' * v';
+rot1 = u * z  * v';
+rot2 = u * z' * v';
 
 % Two possibilities:
 % t1 = u(:,3);
