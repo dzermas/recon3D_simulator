@@ -1,6 +1,11 @@
-function [E_RANSAC, keys1, keys2] = RansacOutlierRejection(ka, kb)
+function [E_RANSAC, keys1, keys2] = outlierRejectionRANSAC(ka, kb)
 
-% each row index in the two keypoint 
+% Implementation of the RANSAC outlier rejection, it computes the Essential
+% matrix as well. This function needs keypoints that come from a feature
+% extractor like SIFT, SURF, etc.
+% INPUT
+% ka, kb : 2xN the x,y coordinates of the keypoints on the two images. We
+% assume that ka(:,i) corresponds to kb(:,i)
 
 % RANSAC threshold
 threshold = 10^(-2);
@@ -8,7 +13,9 @@ threshold = 10^(-2);
 p = 0.95;
 % Probability of choosing an inlier
 w = 0.8;
-% Number of samples to build the model
+% Number of samples to build the model (Hint: use the minimum number of 
+% points that the model needs to be solved, this maximizes the probability 
+% of finding a good solution in less iterations)
 n = 8;
 % Number of itearations for RANSAC
 nIter = log(1-p) / log(1 - w^n);
@@ -20,7 +27,7 @@ for i=1:nIter
     % Select 8 random points
     randIdx = randperm(size(ka,2), n);
     % Compute Essential Matrix model
-    E = ComputeEssentialHL(ka(:,randIdx), kb(:,randIdx));
+    E = computeEssentialHL(ka(:,randIdx), kb(:,randIdx));
 
     % Test Essential model
     nInliers = 0;

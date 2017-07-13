@@ -1,4 +1,5 @@
-function [R, t] = GetPoseFromEssential(E, u, v)
+% This is the "standard" found in Zisserman Hartley's book
+function [R, t] = getPoseFromEssential(E, u, v)
 
 % Translation
 [U,~,V] = svd(E);

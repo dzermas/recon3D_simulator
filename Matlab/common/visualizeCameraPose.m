@@ -1,4 +1,4 @@
-function visualize_camera_pose(camera, R, t, color)
+function visualizeCameraPose(camera, R, t, color)
 
 % camera : camera intrinsics structure
 % R      : rotation of the camera

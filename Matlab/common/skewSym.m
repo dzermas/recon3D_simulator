@@ -1,4 +1,4 @@
-function X = skew_sym(x)
+function X = skewSym(x)
 
 %% Change a vector into its skew symmetric form. Vector can be column or row.
 

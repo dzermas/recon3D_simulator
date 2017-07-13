@@ -1,4 +1,4 @@
-function x = InvNormalize(x_n, camera_params)
+function x = invNormalize(x_n, camera_params)
 
 % express points from the image plain coordinates to pixels
 

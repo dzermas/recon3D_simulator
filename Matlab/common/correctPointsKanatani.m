@@ -1,4 +1,4 @@
-function [v_k, u_k, Dv_k, Du_k, keepers] = correct_points_kanatani(C1_h, C2_h, E_estimated)
+function [v_k, u_k, Dv_k, Du_k, keepers] = correctPointsKanatani(C1_h, C2_h, E_estimated)
 %% Variables
 % Returns the corrected point values and the Dx that is needed for other
 % corrections (depth etc.)

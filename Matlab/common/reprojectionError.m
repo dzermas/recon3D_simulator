@@ -1,10 +1,10 @@
 % Computes the reprojection error sum(sum(T*r - p)^2) for 2 cameras
-function error = reprojection_error(R1, h1, R2, h2, r, p1, p2)
+function error = reprojectionError(R1, h1, R2, h2, r, p1, p2)
 
 % R1, R2: Rotation matrices for cameras 1 and 2
 % h1, h2: translation vectors for cameras 1 and 2
 % r: estimated 3D points
-% p1, p2: image plane bearing points as extracted from the feature
+% p1, p2: image plane homogeneous points as extracted from the feature
 % extraction algorithm
 %
 % error: the squared error

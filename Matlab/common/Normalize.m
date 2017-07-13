@@ -1,4 +1,4 @@
-function x_n = Normalize(x_kk, camera_params)
+function x_n = normalize(x_kk, camera_params)
 
 %Computes the normalized coordinates xn given the pixel coordinates x_kk
 %and the intrinsic camera parameters fc, cc and kc.

@@ -1,6 +1,7 @@
-function X = Triangulation(P1, P2, u, v)
+function X = triangulationZH(P1, P2, u, v)
 
 %% Triangulation
+% Uses the "standard" way found in Zisserman and Hartley
 % Go to each correspondence and compute the 3D point X (3xN) matrix
 X = zeros(3,size(u,2));
 for i = 1 : size(u,2)

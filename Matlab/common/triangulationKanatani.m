@@ -1,4 +1,4 @@
-function [r1, r2] = reconstructionSimple(C1_h, C2_h, R2, h2)
+function [r1, r2] = triangulationKanatani(C1_h, C2_h, R2, h2)
 %% Variables
 % % IN:
 % % C*_homogeneous == 2D in 3Dimensions, not normalized aka norm != 1
@@ -10,8 +10,8 @@ function [r1, r2] = reconstructionSimple(C1_h, C2_h, R2, h2)
 
 
 %% Correct points to accurately validate the epipolar constraint-----------
-Essential = skew_sym(h2) * R2; 
-[v_k, u_k, Dv_k, Du_k] = correct_points_kanatani(C1_h, C2_h, Essential);
+Essential = skewSym(h2) * R2; 
+[v_k, u_k, Dv_k, Du_k] = correctPointsKanatani(C1_h, C2_h, Essential);
 
 %% Triangulate kanatani
 Z.Z1 = []; Z.Zk1 = []; Z.Zk2 = [];

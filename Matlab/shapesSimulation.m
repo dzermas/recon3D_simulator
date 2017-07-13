@@ -1,11 +1,16 @@
+%% #---- Educational platform for 3D reconstruction from two images ----#
+% Dimitris Zermas, 2/15/2016
+% University of Minnesota, Center for Distributed Robotics
+
+% Feel free to explore and play with this code. This is for educational
+% purposes only, hope you find it helpful!
+
 clearvars
 clc
 close all
 
 addpath('common')
 %% Initialize
-dense = 0.5; % How dense the reconstruction should be
-nClasses = 2; % number of SOMs to run
 cube_points = 50;
 sphere_points = 100;
 N_points = cube_points + sphere_points;
@@ -21,7 +26,7 @@ C2_pix = zeros(2, N_points); %% Pixel (pixel values)
 C2_h = zeros(3, N_points); %% Homogeneous (normalized euclidean values)
 C2_b = zeros(3, N_points); %% Bearings (normalized euclidean values)
 
-%% Intrinsics
+%% Camera Intrinsics
 camera.fc = [400;400];
 camera.cc = [320;240];
 camera.kc = [0 0 0 0 0];
@@ -34,7 +39,7 @@ camera.dy = 480;
 % reference R1
 C1_R_C1 = eye(3);
 % reference R2
-C2_R_C1 = generate_random_rotation();
+C2_R_C1 = generateRandomRotation();
 
 % Translations
 % reference t1
@@ -42,7 +47,7 @@ C1_P_C1 = [0; 0; 0];
 % reference t2
 C2_P_C1 = [2*rand; rand ; 0.2*rand];
 
-F = skew_sym(C2_P_C1) * C2_R_C1;
+F = skewSym(C2_P_C1) * C2_R_C1;
 
 %% Create the 3D points
 % Cube
@@ -71,16 +76,19 @@ Y = Y_temp(idx) + sphere_translation(2)*ones(length(idx),1);
 Z = Z_temp(idx) + sphere_translation(3)*ones(length(idx),1);
 xyz = [xyz [X Y Z]'];
 
-%% Visualize object and cameras
-figure, 
-plot3(xyz(1,:), xyz(2,:), xyz(3,:),'.'), hold on
-visualize_camera_pose(camera, C2_R_C1, C2_P_C1, 'r'),
-visualize_camera_pose(camera, C1_R_C1, C1_P_C1, 'b'), axis equal, 
-title('Initial 3D shapes')
+%% Visualize objects and cameras
+f1 = figure;
+hold on
+plot3(xyz(1,:), xyz(2,:), xyz(3,:),'.')
+visualizeCameraPose(camera, C2_R_C1, C2_P_C1, 'r')
+visualizeCameraPose(camera, C1_R_C1, C1_P_C1, 'b') 
+axis equal
+title('Real 3D points')
 hold off
+movegui(f1,'southwest')
 
 %% Generate points on the image planes
-noise_gain = 0.0;
+noise_gain = 0.001; % Try to see how much is considered "too much noise" :)
 for i = 1:size(xyz,2)
     euclidean = xyz(:,i);
     homogeneous = euclidean / euclidean(3);
@@ -110,30 +118,42 @@ for i = 1:size(xyz,2)
 end
 
 %% Visualize what the cameras see!!!
-figure, hold on
+f2 = figure;
+hold on
 subplot(1,2,1);
-plot(C1_pix(1,:), C1_pix(2,:), 'ro')
+plot(C1_pix(1,:), C1_pix(2,:), 'r.')
 title('What the left camera sees')
 subplot(1,2,2);
-plot(C2_pix(1,:), C2_pix(2,:), 'bo')
+plot(C2_pix(1,:), C2_pix(2,:), 'b.')
 title('What the right camera sees')
 hold off
+movegui(f2,'south')
 
-E = ComputeEssentialHL(C1_h, C2_h);
-[R, t, error] = motion_parameters(E, C1_h, C2_h);
+[E, residual] = computeEssentialHL(C1_h, C2_h);
+disp(['Residual computing the Essential matrix :' num2str(residual)]);
 
-recon = reconstructionSimple(C1_h, C2_h, R, t);
+[R, t] = motionParametersKanatani(E, C1_h, C2_h);
 
-error = reprojection_error(C1_R_C1, C1_P_C1, R, t, recon, C1_h, C2_h);
+[recon_kanatani, recon] = triangulationKanatani(C1_h, C2_h, R, t);
+
+repr_err = reprojectionError(C1_R_C1, C1_P_C1, R, t, recon, C1_h, C2_h);
 disp(['Rotation error :' num2str(norm(C2_P_C1' * R - eye(3), 'fro'))]);
+disp(['Reprojection error :' num2str(repr_err)]);
 
 % Plot 3D
-figure, hold on
+f3 = figure;
+hold on
 title('Reconstruction')
 plot3(C1_P(1,:), C1_P(2,:), C1_P(3,:), 'b.')
-plot3(recon(1,:), recon(2,:), recon(3,:), 'r*'), axis equal
-% plot3(r2(1,:), r2(2,:), r2(3,:), 'go')
-visualize_camera_pose(camera, C1_R_C1, C1_P_C1, [1 0 0]), text(C1_P_C1(1), C1_P_C1(2), C1_P_C1(3), 'C1ref', 'FontSize', 10, 'Color', 'k');
-visualize_camera_pose(camera, C2_R_C1, C2_P_C1, [0 1 0]), text(C2_P_C1(1), C2_P_C1(2), C2_P_C1(3), 'C2ref', 'FontSize', 10, 'Color', 'k');
-visualize_camera_pose(camera, R, t, [0 0 1]), text(t(1), t(2), t(3), 'C2', 'FontSize', 10, 'Color', 'k');
+plot3(recon_kanatani(1,:), recon_kanatani(2,:), recon_kanatani(3,:), 'r*')
+plot3(recon(1,:), recon(2,:), recon(3,:), 'g*')
+legend({'real points', 'reconstructed with Kanatani correction', 'reconstructed points'})
+axis equal
+visualizeCameraPose(camera, C1_R_C1, C1_P_C1, [1 0 0]), text(C1_P_C1(1), ...
+    C1_P_C1(2), C1_P_C1(3), 'C1ref', 'FontSize', 10, 'Color', 'k');
+visualizeCameraPose(camera, C2_R_C1, C2_P_C1, [0 1 0]), text(C2_P_C1(1), ...
+    C2_P_C1(2), C2_P_C1(3), 'C2ref', 'FontSize', 10, 'Color', 'k');
+visualizeCameraPose(camera, R, t, [0 0 1]), text(t(1), t(2), t(3), 'C2', ...
+    'FontSize', 10, 'Color', 'k');
 hold off
+movegui(f3,'southeast')

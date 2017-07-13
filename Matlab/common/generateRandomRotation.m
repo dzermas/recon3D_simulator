@@ -1,4 +1,4 @@
-function C2_R_C1 = generate_random_rotation()
+function C2_R_C1 = generateRandomRotation()
 
 random_angle_1 = rand * 5 * pi / 180;
 random_angle_2 = rand * (-5) * pi / 180;
