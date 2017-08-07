@@ -47,4 +47,4 @@ xn yn zn
 
 To run the C++ program, build it and then from inside the build folder execute:
 
-`./simulation ../data/<input_text_file>.txt`
+`./simulation ../../data/<input_text_file>.txt`
