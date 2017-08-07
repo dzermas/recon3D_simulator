@@ -1,3 +1,6 @@
+# Build inside the C++ folder
+C++/build
+
 # Compiled Object files
 *.slo
 *.lo

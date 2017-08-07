@@ -88,7 +88,7 @@ hold off
 movegui(f1,'southwest')
 
 %% Generate points on the image planes
-noise_gain = 0.001; % Try to see how much is considered "too much noise" :)
+noise_gain = 0.0; % Try to see how much is considered "too much noise" :)
 for i = 1:size(xyz,2)
     euclidean = xyz(:,i);
     homogeneous = euclidean / euclidean(3);
