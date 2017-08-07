@@ -29,4 +29,4 @@ link_directories(${PCL_LIBRARY_DIRS})
 add_executable (simulation ${SOURCE})
 
 ## External Libraries
-target_link_libraries (simulation ${PCL_LIBRARIES} ${VTK_LIBRARIES})
+target_link_libraries (simulation ${PCL_LIBRARIES})
