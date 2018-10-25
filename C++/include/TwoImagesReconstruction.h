@@ -27,7 +27,7 @@ private:
 
     EigMatX r_points; // Reconstructed 3D points
 
-	scalar essential_residual; // Residual from the estimation of the essential matrix
+    scalar essential_residual; // Residual from the estimation of the essential matrix
 
     int data_size;
 public:
@@ -41,13 +41,13 @@ public:
 	void getTranslation(EigVec&);
 	void getEssentialResidual(scalar&);
 	void getReconstructedPoints(EigMatX&);
-    void getCorrectedCorrespondences(EigMatX&, EigMatX&);
-    void getDataSize(int&);
+    	void getCorrectedCorrespondences(EigMatX&, EigMatX&);
+    	void getDataSize(int&);
 
 	// Main functions
 	void computeEssentialHL();
 	void motionParametersKanatani();
-    void correctCorrespondencesKanatani();
+    	void correctCorrespondencesKanatani();
 	void triangulationKanatani();
 
 	// Constructor / Destructor
