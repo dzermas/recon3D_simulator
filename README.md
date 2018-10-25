@@ -33,18 +33,14 @@ You may find a stable version of PCL [here](http://pointclouds.org/downloads/), 
 * `make`
 
 ## Run
-The C++ program reads a text file with N rows and 3 columns (x,y,z) and has the following format:
-
+The program reads a text file with N rows and 3 columns (x,y,z) of the following format:
+```
 x0 y0 z0
-
 x1 y1 z1
-
 x2 y2 z2
-
 ...
-
 xn yn zn
-
-To run the C++ program, build it and then from inside the build folder execute:
+```
+To run, execute the following from within the build folder:
 
 `./simulation ../../data/<input_text_file>.txt`
